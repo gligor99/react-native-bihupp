@@ -1,6 +1,6 @@
 {
   "name": "react-native-bihupp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React Native and Expo components for BIHUPP10 bank payment QR codes in Bosnia and Herzegovina.",
   "keywords": [
     "react-native",
