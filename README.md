@@ -1,5 +1,9 @@
 # react-native-bihupp
 
+[![npm](https://img.shields.io/npm/v/react-native-bihupp)](https://www.npmjs.com/package/react-native-bihupp)
+[![CI](https://github.com/gligor99/react-native-bihupp/actions/workflows/ci.yml/badge.svg)](https://github.com/gligor99/react-native-bihupp/actions/workflows/ci.yml)
+[![Try it on Snack](https://img.shields.io/badge/Try%20it-Expo%20Snack-4630EB?logo=expo)](https://snack.expo.dev/@g99labs/react-native-bihupp)
+
 React Native and Expo components for **BIHUPP10** bank payment QR codes in Bosnia and Herzegovina — render a payment QR code ("uplatnica") or scan one with the camera.
 
 Built on top of [`bihupp-js`](https://github.com/gligor99/bihupp-js), the core TypeScript library.
@@ -8,6 +12,8 @@ Built on top of [`bihupp-js`](https://github.com/gligor99/bihupp-js), the core T
 - `useBihuppScanner()` — turns raw camera scans into parsed payment data
 - Pure JavaScript, no native code — works in **Expo Go**, development builds and bare React Native
 - Tested against **Expo SDK 57 and 58** on every change
+
+**▶ [Try it in your browser or on your phone with Expo Snack](https://snack.expo.dev/@g99labs/react-native-bihupp)** — generate a payment QR code and scan it with Expo Go.
 
 ---
 
@@ -185,6 +191,8 @@ For field constraints, the allowed character set and Zod validation, see the [`b
 ---
 
 ## Example app
+
+Try it without installing anything on [Expo Snack](https://snack.expo.dev/@g99labs/react-native-bihupp) (source: [`example/snack/App.tsx`](example/snack/App.tsx)).
 
 The [`example`](example) folder contains an Expo SDK 58 app with a QR generator form and a camera scanner.
 

@@ -40,6 +40,7 @@ src/
   useBihuppScanner.ts    scanner hook
   __tests__/             unit tests
 example/                 Expo example app
+example/snack/App.tsx    source of the Expo Snack demo (paste into the Snack when it changes)
 scripts/sdk-compat.sh    Expo SDK compatibility check (used in CI)
 ```
 
