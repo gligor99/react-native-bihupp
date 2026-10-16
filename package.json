@@ -1,0 +1,63 @@
+{
+  "name": "react-native-bihupp",
+  "version": "0.1.0",
+  "description": "React Native components for BIHUPP10 bank payment QR codes in Bosnia and Herzegovina",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "bihupp",
+    "bihupp10",
+    "react-native",
+    "qrcode",
+    "bosnia",
+    "payment",
+    "bih"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bihupp-js": "^0.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.74.0",
+    "react-native-qrcode-svg": ">=6.0.0",
+    "react-native-svg": ">=15.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native-qrcode-svg": {
+      "optional": true
+    },
+    "react-native-svg": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-native": "^0.74.0",
+    "typescript": "^5.7.0",
+    "tsup": "^8.0.0",
+    "vitest": "^3.0.0"
+  }
+}
