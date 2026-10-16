@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    ignore:
+      # Tied to the Expo SDK; upgraded together with `npx expo install --fix`
+      - dependency-name: "react"
+      - dependency-name: "react-native"
+      - dependency-name: "react-native-svg"
+      - dependency-name: "@react-native/*"
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-major"]
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

@@ -1,18 +1,19 @@
 // ─── Components ──────────────────────────────────────────────────────────────
-export { BihuppQRCode } from './BihuppQRCode.js';
-export type { BihuppQRCodeProps } from './BihuppQRCode.js';
+export { BihuppQRCode } from './BihuppQRCode';
+export type { BihuppQRCodeProps } from './BihuppQRCode';
 
 // ─── Hooks ───────────────────────────────────────────────────────────────────
-export { useBihuppScanner } from './useBihuppScanner.js';
+export { useBihuppScanner } from './useBihuppScanner';
 export type {
   UseBihuppScannerOptions,
   UseBihuppScannerReturn,
   ScannerState,
-} from './useBihuppScanner.js';
+} from './useBihuppScanner';
 
 // ─── Re-export bihupp-js core for convenience ─────────────────────────────────
 export {
   PaymentInstruction,
+  PaymentInstructionBuilder,
   parsePaymentInstruction,
   validatePaymentInstruction,
   Name,

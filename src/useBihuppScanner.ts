@@ -1,11 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { parsePaymentInstruction, type ParseResult } from 'bihupp-js';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface ScannerState {
+  /** Result of the last scan, or `null` if nothing was scanned yet */
   result: ParseResult | null;
-  isScanning: boolean;
+  /** True once a valid BIHUPP10 code was scanned and `stopAfterScan` is on */
   hasScanned: boolean;
 }
 
@@ -33,8 +34,8 @@ export interface UseBihuppScannerReturn {
 
 /**
  * Hook for handling BIHUPP10 QR code scanning.
- * 
- * Works with `expo-camera`, `expo-barcode-scanner`, or any scanner
+ *
+ * Works with `expo-camera`, `react-native-vision-camera`, or any scanner
  * that gives you a raw string from the QR code.
  *
  * @example
@@ -43,7 +44,7 @@ export interface UseBihuppScannerReturn {
  * import { useBihuppScanner } from 'react-native-bihupp';
  *
  * export function ScannerScreen() {
- *   const { handleScan, state, reset, isActive } = useBihuppScanner({
+ *   const { handleScan, isActive } = useBihuppScanner({
  *     onSuccess: (result) => {
  *       console.log(result.instruction.recipient.name.value);
  *       console.log(result.instruction.amount.pennies / 100, 'BAM');
@@ -70,35 +71,41 @@ export function useBihuppScanner({
 }: UseBihuppScannerOptions = {}): UseBihuppScannerReturn {
   const [state, setState] = useState<ScannerState>({
     result: null,
-    isScanning: false,
     hasScanned: false,
+  });
+
+  // Cameras fire many scan events per second, before React re-renders.
+  // A ref lock guarantees `onSuccess` fires exactly once per successful scan.
+  const lockedRef = useRef(false);
+
+  // Keep the latest callbacks without making `handleScan` unstable.
+  const callbacksRef = useRef({ onSuccess, onError });
+  useEffect(() => {
+    callbacksRef.current = { onSuccess, onError };
   });
 
   const handleScan = useCallback(
     (data: string) => {
-      if (stopAfterScan && state.hasScanned) return;
-
-      setState((prev) => ({ ...prev, isScanning: true }));
+      if (lockedRef.current) return;
 
       const result = parsePaymentInstruction(data);
+      const locked = result.success && stopAfterScan;
+      lockedRef.current = locked;
 
-      setState({
-        result,
-        isScanning: false,
-        hasScanned: result.success ? stopAfterScan : false,
-      });
+      setState({ result, hasScanned: locked });
 
       if (result.success) {
-        onSuccess?.(result);
+        callbacksRef.current.onSuccess?.(result);
       } else {
-        onError?.(result);
+        callbacksRef.current.onError?.(result);
       }
     },
-    [state.hasScanned, stopAfterScan, onSuccess, onError],
+    [stopAfterScan]
   );
 
   const reset = useCallback(() => {
-    setState({ result: null, isScanning: false, hasScanned: false });
+    lockedRef.current = false;
+    setState({ result: null, hasScanned: false });
   }, []);
 
   return {

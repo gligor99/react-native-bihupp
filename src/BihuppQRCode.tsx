@@ -1,38 +1,66 @@
-import React from 'react';
-import { View, StyleSheet, type ViewStyle } from 'react-native';
+import { useEffect, useMemo } from 'react';
+import {
+  View,
+  StyleSheet,
+  type ImageSourcePropType,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
+import QRCode from 'react-native-qrcode-svg';
 import { PaymentInstruction, type PaymentInstructionParams } from 'bihupp-js';
-
-// We lazy-import QRCode to avoid hard crash if peer dep isn't installed
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let QRCode: any;
-try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  QRCode = require('react-native-qrcode-svg').default;
-} catch {
-  QRCode = null;
-}
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 export interface BihuppQRCodeProps {
-  /** Payment instruction params — passed directly to PaymentInstruction constructor */
-  instruction: PaymentInstructionParams;
+  /**
+   * Payment instruction — either the params object passed to the
+   * `PaymentInstruction` constructor, or an already built `PaymentInstruction`.
+   */
+  instruction: PaymentInstructionParams | PaymentInstruction;
   /** QR code size in pixels (default: 200) */
   size?: number;
   /** QR code foreground color (default: '#000000') */
   color?: string;
   /** QR code background color (default: '#ffffff') */
   backgroundColor?: string;
-  /** Optional logo to embed in center of QR */
-  logo?: object;
+  /** Error correction level (default: 'M') */
+  ecl?: 'L' | 'M' | 'Q' | 'H';
+  /** Quiet zone (white border) around the QR code in pixels (default: 0) */
+  quietZone?: number;
+  /** Optional logo to embed in the center of the QR code */
+  logo?: ImageSourcePropType;
   /** Logo size as ratio of QR size (default: 0.2) */
   logoSize?: number;
   /** Container style */
-  style?: ViewStyle;
-  /** Called when QR is successfully rendered */
-  onReady?: () => void;
+  style?: StyleProp<ViewStyle>;
+  /** Accessibility label for the QR code (default: 'Payment QR code') */
+  accessibilityLabel?: string;
+  /** Called with the BIHUPP10 payload once it is built successfully */
+  onReady?: (payload: string) => void;
   /** Called if building the payload throws a validation error */
   onError?: (error: Error) => void;
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+type BuildResult =
+  { payload: string; error: null } | { payload: null; error: Error };
+
+function buildPayload(
+  instruction: PaymentInstructionParams | PaymentInstruction
+): BuildResult {
+  try {
+    const inst =
+      instruction instanceof PaymentInstruction
+        ? instruction
+        : new PaymentInstruction(instruction);
+    return { payload: inst.toString(), error: null };
+  } catch (err) {
+    return {
+      payload: null,
+      error: err instanceof Error ? err : new Error(String(err)),
+    };
+  }
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -62,45 +90,51 @@ export interface BihuppQRCodeProps {
  * ```
  */
 export function BihuppQRCode({
-  instruction: instructionParams,
+  instruction,
   size = 200,
   color = '#000000',
   backgroundColor = '#ffffff',
+  ecl = 'M',
+  quietZone = 0,
   logo,
   logoSize = 0.2,
   style,
+  accessibilityLabel = 'Payment QR code',
   onReady,
   onError,
-}: BihuppQRCodeProps): React.ReactElement | null {
-  if (QRCode === null) {
-    console.error(
-      '[react-native-bihupp] `react-native-qrcode-svg` is not installed. ' +
-        'Run: npx expo install react-native-qrcode-svg react-native-svg',
-    );
-    return null;
-  }
+}: BihuppQRCodeProps) {
+  const { payload, error } = useMemo(
+    () => buildPayload(instruction),
+    [instruction]
+  );
 
-  let payload: string;
-  try {
-    const inst = new PaymentInstruction(instructionParams);
-    payload = inst.toString();
-  } catch (err) {
-    const error = err instanceof Error ? err : new Error(String(err));
-    onError?.(error);
-    return null;
-  }
+  // Callbacks run after render, never during it.
+  useEffect(() => {
+    if (error) onError?.(error);
+    else onReady?.(payload);
+    // Only re-run when the result changes, not when callback identity changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payload, error]);
+
+  if (payload === null) return null;
 
   return (
-    <View style={[styles.container, style]}>
+    <View
+      style={[styles.container, style]}
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel={accessibilityLabel}
+      testID="bihupp-qr-code"
+    >
       <QRCode
         value={payload}
         size={size}
         color={color}
         backgroundColor={backgroundColor}
-        logo={logo}
-        logoSize={size * logoSize}
+        ecl={ecl}
+        quietZone={quietZone}
+        {...(logo ? { logo, logoSize: size * logoSize } : {})}
         onError={onError}
-        getRef={onReady ? () => onReady() : undefined}
       />
     </View>
   );

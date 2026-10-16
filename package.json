@@ -1,63 +1,126 @@
 {
   "name": "react-native-bihupp",
-  "version": "0.1.0",
-  "description": "React Native components for BIHUPP10 bank payment QR codes in Bosnia and Herzegovina",
-  "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
-  },
+  "version": "1.0.0",
+  "description": "React Native and Expo components for BIHUPP10 bank payment QR codes in Bosnia and Herzegovina.",
   "keywords": [
+    "react-native",
+    "expo",
     "bihupp",
     "bihupp10",
-    "react-native",
+    "qr",
+    "qr-code",
     "qrcode",
-    "bosnia",
     "payment",
+    "uplatnica",
+    "bank",
+    "bosnia",
+    "bosnia-and-herzegovina",
     "bih"
   ],
-  "author": "",
   "license": "MIT",
+  "author": "Luka Gligorevic",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gligor99/react-native-bihupp.git"
+  },
+  "homepage": "https://github.com/gligor99/react-native-bihupp#readme",
+  "bugs": {
+    "url": "https://github.com/gligor99/react-native-bihupp/issues"
+  },
+  "main": "./lib/module/index.js",
+  "types": "./lib/typescript/src/index.d.ts",
+  "exports": {
+    ".": {
+      "react-native-bihupp-source": "./src/index.tsx",
+      "types": "./lib/typescript/src/index.d.ts",
+      "default": "./lib/module/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
+  ],
+  "scripts": {
+    "example": "yarn workspace react-native-bihupp-example",
+    "clean": "del-cli lib",
+    "prepare": "bob build",
+    "typecheck": "tsc",
+    "test": "jest",
+    "lint:pkg": "publint --pack npm"
+  },
   "dependencies": {
-    "bihupp-js": "^0.1.0"
+    "bihupp-js": "^2.0.0"
   },
   "peerDependencies": {
-    "react": ">=18.0.0",
-    "react-native": ">=0.74.0",
-    "react-native-qrcode-svg": ">=6.0.0",
+    "react": ">=19.0.0",
+    "react-native": ">=0.79.0",
+    "react-native-qrcode-svg": ">=6.3.0",
     "react-native-svg": ">=15.0.0"
   },
-  "peerDependenciesMeta": {
-    "react-native-qrcode-svg": {
-      "optional": true
+  "workspaces": [
+    "example"
+  ],
+  "packageManager": "yarn@4.11.0",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  },
+  "jest": {
+    "preset": "@react-native/jest-preset",
+    "testEnvironmentOptions": {
+      "customExportConditions": [
+        "require",
+        "react-native",
+        "react-native-bihupp-source"
+      ]
     },
-    "react-native-svg": {
-      "optional": true
-    }
+    "modulePathIgnorePatterns": [
+      "<rootDir>/example/node_modules",
+      "<rootDir>/lib/"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)(-[a-z-]+)?/)"
+    ]
   },
   "devDependencies": {
-    "@types/react": "^18.0.0",
-    "@types/react-native": "^0.74.0",
-    "typescript": "^5.7.0",
-    "tsup": "^8.0.0",
-    "vitest": "^3.0.0"
+    "@jest/globals": "^29.7.0",
+    "@react-native/babel-preset": "0.88.0",
+    "@react-native/jest-preset": "0.88.0",
+    "@testing-library/react-native": "^14.1.0",
+    "@types/react": "^19.3.0",
+    "del-cli": "^7.0.0",
+    "jest": "^29.7.0",
+    "publint": "^0.3.25",
+    "react": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-builder-bob": "^0.43.2",
+    "react-native-qrcode-svg": "^6.3.26",
+    "react-native-svg": "15.16.0",
+    "test-renderer": "^1.0.0",
+    "typescript": "^6.0.3"
   }
 }
