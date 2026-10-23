@@ -4291,8 +4291,8 @@ __metadata:
   linkType: hard
 
 "expo-camera@npm:~58.0.10":
-  version: 58.0.10
-  resolution: "expo-camera@npm:58.0.10"
+  version: 58.0.11
+  resolution: "expo-camera@npm:58.0.11"
   dependencies:
     barcode-detector: "npm:^3.0.0"
   peerDependencies:
@@ -4303,7 +4303,7 @@ __metadata:
   peerDependenciesMeta:
     react-native-web:
       optional: true
-  checksum: 10c0/a4926bbbf779e790684055dd91eb530a3ffeb575d2fd34d610559270699c148f030cc3e085b40ea5f175e54435d51f633353cfb194ee9fb5a16e6db50dd22593
+  checksum: 10c0/fa2d695efb400adc9bed84425a2906b2a7d871d01ccb44ff1210b07287b0750320cf8f47069fd61eaa34377b4d77008a2b651b06d6ac8c989e6c9ea2940afc7f
   languageName: node
   linkType: hard
 
